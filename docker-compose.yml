@@ -4,7 +4,7 @@ services:
   react:
     build:
       context: .
-      dockerfile: ./docker/react/Dockerfile
+      dockerfile: ./.docker/react/Dockerfile
     container_name: react_container
     tty: true
     volumes:
@@ -17,7 +17,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./docker/api/Dockerfile
+      dockerfile: ./.docker/api/Dockerfile
     container_name: api_container
     ports:
       - 8000:8000
@@ -29,21 +29,21 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: ./docker/nginx/Dockerfile
+      dockerfile: ./.docker/nginx/Dockerfile
     container_name: nginx_container
     ports:
       - 443:443
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./docker/nginx/ssl:/etc/nginx/ssl
+      - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./.docker/nginx/ssl:/etc/nginx/ssl
 
   mysql:
     build:
       context: .
-      dockerfile: ./docker/mysql/Dockerfile
+      dockerfile: ./.docker/mysql/Dockerfile
     container_name: mysql_container
     ports:
       - 3306:3306
     volumes:
-      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./.docker/mysql/conf.d:/etc/mysql/conf.d
     tty: true
