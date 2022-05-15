@@ -1,6 +1,4 @@
-FROM golang:alpine
-
-ENV GO111MODULE=on
+FROM golang:latest
 
 COPY api/ /go/src/api
 WORKDIR /go/src/api

@@ -3,5 +3,14 @@
         "**/.git": false,
         "**/.vscode": false,
         "**/README.md": true,
-    }
+    },
+    "[javascript]": {
+        "editor.tabSize": 2,
+        "editor.renderWhitespace":"boundary"
+    },
+    "[typescript]": {
+        "editor.tabSize": 2,
+        "editor.renderWhitespace":"boundary"
+    },
+
 }

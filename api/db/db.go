@@ -9,8 +9,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func gormConnect() *gorm.DB {
-	err := godotenv.Load(fmt.Sprintf("../envfiles/%s.env", os.Getenv("GO_ENV")))
+// GormConnect is DB Connect.
+func GormConnect() *gorm.DB {
+	err := godotenv.Load(fmt.Sprintf("./envfiles/%s.env", os.Getenv("GO_ENV")))
 	if err != nil {
 		log.Fatal("Error Loading .env File")
 	}

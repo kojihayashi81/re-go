@@ -1,18 +1,23 @@
 package main
 
 import (
-	"api/controller"
+	"api/controllers"
+	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	router := gin.Default()
-
-	v1 := router.Group("/v1")
+	r := gin.Default()
+	v1 := r.Group("/v1")
 	{
-		v1.GET("/test", controller.MyFunction)
+		v1.GET("/status", controllers.Status)
+		v1.POST("/movie", controllers.SignUp)
 	}
-
-	router.Run(":8000")
+	r.NoRoute(func(c *gin.Context) { c.JSON(http.StatusNotFound, gin.H{"code": 404}) })
+	err := r.Run(":8000")
+	if err != nil {
+		log.Panicln(err)
+	}
 }
