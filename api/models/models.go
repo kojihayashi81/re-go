@@ -1,18 +1,20 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Movie struct {
 	ID          int          `json:"id"`
 	Title       string       `json:"title"`
 	Descriotion string       `json:"description"`
 	Year        int          `json:"year"`
-	ReleaseDate time.Time    `json:"release_date"`
+	ReleaseDate time.Time    `json:"release_date" gorm:"type:datetime(6)"`
 	Runtime     int          `json:"runtime"`
 	Rating      int          `json:"rating"`
 	MRAARating  string       `json:"mpaa_rating"`
-	CreatedAt   time.Time    `json:"created_at"`
-	UpdatedAt   time.Time    `json:"updated_at"`
+	CreatedAt   time.Time    `json:"created_at" gorm:"type:datetime(6)"`
+	UpdatedAt   time.Time    `json:"updated_at" gorm:"type:datetime(6)"`
 	MovieGenre  []MovieGenre `json:"-"`
 }
 

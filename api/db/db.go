@@ -7,27 +7,25 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
-// GormConnect is DB Connect.
-func GormConnect() *gorm.DB {
-	err := godotenv.Load(fmt.Sprintf("./envfiles/%s.env", os.Getenv("GO_ENV")))
+func DbOpen() (*gorm.DB, error) {
+	err := godotenv.Load(fmt.Sprintf("./envfiles/%s.env", os.Getenv("APP_ENV")))
 	if err != nil {
 		log.Fatal("Error Loading .env File")
 	}
 
-	DBMS := os.Getenv("ENV")
-	DBNAME := os.Getenv("DBNAME")
-	DBUser := os.Getenv("DBUSER")
-	DBPass := os.Getenv("DBPASS")
-	PROTOCOL := os.Getenv("PROTOCOL")
+	ms := os.Getenv("DB_MS")
+	dbName := os.Getenv("DB_NAME")
+	user := os.Getenv("DB_USER")
+	pass := os.Getenv("DB_PASSWORD")
+	dbPort := os.Getenv("DB_PORT")
+	protocol := "tcp(" + "db" + ":" + dbPort + ")"
+	connect := user + ":" + pass + "@" + protocol + "/" + dbName + "?parseTime=true"
 
-	CONNECT := DBUser + ":" + DBPass + "@" + PROTOCOL + "/" + DBNAME
+	db, err := gorm.Open(ms, connect)
 
-	db, err := gorm.Open(DBMS, CONNECT)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	return db
+	return db, err
 }

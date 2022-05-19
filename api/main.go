@@ -1,21 +1,32 @@
 package main
 
 import (
-	"api/controllers"
+	"flag"
 	"log"
-	"net/http"
+	"main/routes"
 
 	"github.com/gin-gonic/gin"
 )
 
+type config struct {
+	port int
+	env  string
+}
+
+var cfg config
+
+func init() {
+	flag.IntVar(&cfg.port, "port", 8000, "Server port to listen on")
+	flag.StringVar(&cfg.env, "env", "development", "Application environment (development|production)")
+}
+
 func main() {
+	flag.Parse()
+
 	r := gin.Default()
-	v1 := r.Group("/v1")
-	{
-		v1.GET("/status", controllers.Status)
-		v1.POST("/movie", controllers.SignUp)
-	}
-	r.NoRoute(func(c *gin.Context) { c.JSON(http.StatusNotFound, gin.H{"code": 404}) })
+
+	routes.Router(r)
+
 	err := r.Run(":8000")
 	if err != nil {
 		log.Panicln(err)
