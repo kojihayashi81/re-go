@@ -17,6 +17,7 @@ func Router(r *gin.Engine) {
 	{
 		v1.GET("/status", controllers.Status)
 		v1.GET("/movie/:id", controllers.GetMovie)
+		v1.GET("/movies", controllers.GetAllMovie)
 	}
 
 	r.NoRoute(func(c *gin.Context) { c.JSON(http.StatusNotFound, gin.H{"code": 404}) })
