@@ -13,7 +13,7 @@ func Router(r *gin.Engine) {
 	v1 := r.Group("/v1")
 
 	v1.Use(middleware.Logger())
-
+	v1.Use(middleware.Cors())
 	{
 		v1.GET("/status", controllers.Status)
 		v1.GET("/movie/:id", controllers.GetMovie)

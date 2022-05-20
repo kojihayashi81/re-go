@@ -47,7 +47,7 @@ func GetMovie(c *gin.Context) {
 
 	var m models.Movie
 
-	result := db.First(&m, id)
+	result := db.Preload("MovieGenre.Genre").First(&m, id)
 	if result.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"result": err.Error(),
@@ -78,10 +78,7 @@ func GetAllMovie(c *gin.Context) {
 			"error": err.Error(),
 		})
 		return
-
 	}
-
-	// var m models.Movie
 
 	var movies []*models.Movie
 	result := db.Find(&movies)
@@ -91,6 +88,7 @@ func GetAllMovie(c *gin.Context) {
 		})
 		return
 	}
+	db.Preload("MovieGenre.Genre").Find(&movies)
 
 	c.JSON(http.StatusOK, &movies)
 }
