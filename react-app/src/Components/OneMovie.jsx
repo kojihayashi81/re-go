@@ -1,5 +1,4 @@
-import React, { Component, Fragment, useEffect, useState } from "react"
-import { Link } from 'react-router-dom';
+import React, { Fragment, useEffect, useState } from "react"
 
 const OneMovie = (props) => {
   const [movie, setMovie] = useState([]);

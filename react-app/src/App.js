@@ -1,10 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, useParams, useRouteMatch } from 'react-router-dom';
 import Admin from './Components/Admin'
 import Categories from './Components/Categories'
 import Home from './Components/Home'
 import Movies from './Components/Movies'
 import OneMovie from './Components/OneMovie'
+import EditMovie from './Components/EditMovie'
 
 
 export default function App() {
@@ -31,6 +32,9 @@ export default function App() {
                 </li>
                 <li className="list-group-item">
                   <Link to="/admin">Manage Catalogue</Link>
+                </li>
+                <li className="list-group-item">
+                  <Link to="/admin/add">Add Movie</Link>
                 </li>
                 <li className="list-group-item">
                   <Link to="/by-category">Category</Link>
@@ -60,7 +64,7 @@ export default function App() {
                 render={(props) => <Categories {...props} title={`Comedy`} />}
               />
 
-
+              <Route path="/admin/add" component={EditMovie} />
               <Route path="/admin">
                 <Admin />
               </Route>
