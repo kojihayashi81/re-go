@@ -8,26 +8,22 @@ import (
 )
 
 func Cors() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		cors.New(cors.Config{
-			AllowOrigins: []string{
-				"*",
-			},
-			AllowMethods: []string{
-				"POST",
-				"GET",
-				"OPTIONS",
-			},
-			AllowHeaders: []string{
-				"Access-Control-Allow-Credentials",
-				"Access-Control-Allow-Headers",
-				"Content-Type",
-				"Content-Length",
-				"Accept-Encoding",
-				"Authorization",
-			},
-			AllowCredentials: true,
-			MaxAge:           24 * time.Hour,
-		})
-	}
+	return cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:3000",
+		},
+		AllowMethods: []string{
+			"GET",
+			"POST",
+			"PUT",
+			"PATCH",
+			"DELETE",
+			"OPTIONS",
+		},
+		AllowHeaders: []string{
+			"Content-Type",
+		},
+		AllowCredentials: false,
+		MaxAge:           12 * time.Hour,
+	})
 }
