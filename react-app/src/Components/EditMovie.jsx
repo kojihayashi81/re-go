@@ -19,21 +19,26 @@ const EditMovie = (props) => {
   useEffect(() => {
     if (id > 0) {
       async function fetchData() {
-        const movie = await axios.get("http://localhost:8000/v1/movie/" + id)
+        await axios.get("http://localhost:8000/v1/movie/" + id)
           .then((res) => {
             if (res.status !== 200) {
               let err = Error
               err.Message = "Invalid response code:" + res.status
               setMovie({ error: err })
             }
-            return res.data
+            setMovie({
+              movie: res.data,
+              isLoaded: true,
+              error: "",
+              alert: {
+                type: "d-none",
+                message: ""
+              }
+            })
           })
-        setMovie({
-          movie: movie, isLoaded: true, alert: {
-            type: "d-none",
-            message: ""
-          }
-        })
+          .catch((res) => {
+            setMovie({ error: { message: res.message } })
+          })
       }
       fetchData()
     } else if (typeof id !== 'number') {
@@ -62,13 +67,15 @@ const EditMovie = (props) => {
             isLoaded: movie.isLoaded,
             alert: { type: "alert-danger", message: data.error.message }
           })
-        } else {
-          setMovie({
-            movie: movie.movie,
-            isLoaded: movie.isLoaded,
-            alert: { type: "alert-success", message: "Success Saved" }
-          })
         }
+      })
+      .catch((res) => {
+        console.log(res)
+        setMovie({
+          movie: {},
+          isLoaded: movie.isLoaded,
+          alert: { type: "alert-success", message: "Success Saved" }
+        })
       })
   }
 

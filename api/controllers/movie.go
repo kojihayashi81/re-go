@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"log"
 	"main/db"
 	"main/models"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
 func GetMovie(c *gin.Context) {
@@ -49,9 +51,17 @@ func GetMovie(c *gin.Context) {
 	var m models.Movie
 
 	result := db.Preload("MovieGenre.Genre").First(&m, id)
-	if result.Error != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"result": err.Error(),
+	log.Println("aaaa")
+	// if result.Error != nil {
+	// 	c.JSON(http.StatusOK, gin.H{
+	// 		"result": err.Error(),
+	// 	})
+	// 	return
+	// }
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"code":  http.StatusNotFound,
+			"error": result.Error,
 		})
 		return
 	}
@@ -138,7 +148,7 @@ func CreateMovie(c *gin.Context) {
 
 	db.Create(movie)
 
-	c.JSON(http.StatusOK, gin.H{"message": "OK"})
+	c.JSON(http.StatusCreated, gin.H{"message": "OK"})
 }
 
 func UpdateMovie(c *gin.Context) {
@@ -151,25 +161,6 @@ func UpdateMovie(c *gin.Context) {
 			"error": err.Error(),
 		})
 		return
-	}
-
-	var moviePayload models.MoviePayload
-	c.BindJSON(&moviePayload)
-
-	runtime, _ := strconv.Atoi(moviePayload.Runtime)
-	rating, _ := strconv.Atoi(moviePayload.Rating)
-	movie := &models.Movie{
-		ID:          id,
-		Title:       moviePayload.Title,
-		Description: moviePayload.Description,
-		Year:        moviePayload.ReleaseDate.Year(),
-		ReleaseDate: moviePayload.ReleaseDate,
-		Runtime:     runtime,
-		Rating:      rating,
-		MPAARating:  moviePayload.MPAARating,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-		MovieGenre:  []models.MovieGenre{},
 	}
 
 	db, err := db.DbOpen()
@@ -193,7 +184,34 @@ func UpdateMovie(c *gin.Context) {
 		return
 	}
 
+	var movie models.Movie
+	result := db.First(&movie, id)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"code":  http.StatusNotFound,
+			"error": result.Error,
+		})
+		return
+	}
+
+	var moviePayload models.MoviePayload
+	c.BindJSON(&moviePayload)
+
+	runtime, _ := strconv.Atoi(moviePayload.Runtime)
+	rating, _ := strconv.Atoi(moviePayload.Rating)
+	movie.ID = id
+	movie.Title = moviePayload.Title
+	movie.Description = moviePayload.Description
+	movie.Year = moviePayload.ReleaseDate.Year()
+	movie.ReleaseDate = moviePayload.ReleaseDate
+	movie.Runtime = runtime
+	movie.Rating = rating
+	movie.MPAARating = moviePayload.MPAARating
+	movie.CreatedAt = time.Now()
+	movie.UpdatedAt = time.Now()
+	movie.MovieGenre = []models.MovieGenre{}
+
 	db.Save(movie)
 
-	c.JSON(http.StatusOK, gin.H{"message": "OK"})
+	c.JSON(http.StatusCreated, gin.H{"message": "OK"})
 }

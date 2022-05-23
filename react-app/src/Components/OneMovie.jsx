@@ -27,6 +27,7 @@ const OneMovie = (props) => {
             }
             return res.data
           })
+          .catch((res) => { console.log(res) })
         setMovie({
           movie: movie, isLoaded: true, alert: {
             type: "d-none",
@@ -45,6 +46,8 @@ const OneMovie = (props) => {
   return (
     <Fragment>
       <h2>Movie: {movie.title}</h2>
+
+      <hr />
 
       <table className="table table-compact table-striped">
         <thead></thead>
