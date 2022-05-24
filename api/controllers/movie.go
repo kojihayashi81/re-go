@@ -49,15 +49,7 @@ func GetMovie(c *gin.Context) {
 	}
 
 	var m models.Movie
-
 	result := db.Preload("MovieGenre.Genre").First(&m, id)
-	log.Println("aaaa")
-	// if result.Error != nil {
-	// 	c.JSON(http.StatusOK, gin.H{
-	// 		"result": err.Error(),
-	// 	})
-	// 	return
-	// }
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.JSON(http.StatusNotFound, gin.H{
 			"code":  http.StatusNotFound,
@@ -212,6 +204,54 @@ func UpdateMovie(c *gin.Context) {
 	movie.MovieGenre = []models.MovieGenre{}
 
 	db.Save(movie)
+
+	c.JSON(http.StatusCreated, gin.H{"message": "OK"})
+}
+
+func DeleteMovie(c *gin.Context) {
+	param := c.Param("id")
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		log.Println("Invalid id parameter", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":  http.StatusBadRequest,
+			"error": err.Error(),
+		})
+		return
+	}
+
+	db, err := db.DbOpen()
+	defer func() {
+		err := db.Close()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"code":   http.StatusInternalServerError,
+				"result": err.Error(),
+			})
+			return
+		}
+	}()
+
+	if err != nil {
+		log.Println("Internal Server Error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  http.StatusInternalServerError,
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var movie models.Movie
+	result := db.First(&movie, id)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"code":  http.StatusNotFound,
+			"error": result.Error,
+		})
+		return
+	}
+
+	db.Delete(movie, id)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "OK"})
 }

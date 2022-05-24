@@ -1,6 +1,9 @@
 import axios from 'axios'
 import React, { Fragment, useEffect, useState } from "react"
 import Alert from './UI-Components/Alert';
+import { Link } from 'react-router-dom';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 
 const EditMovie = (props) => {
   const [movie, setMovie] = useState(
@@ -77,6 +80,39 @@ const EditMovie = (props) => {
           alert: { type: "alert-success", message: "Success Saved" }
         })
       })
+  }
+  const confirmDelete = (e) => {
+    console.log("delete?")
+    confirmAlert({
+      title: 'Confirm to delete?',
+      message: 'Are you sure to do this.',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            axios.delete("http://localhost:8000/v1/movie/" + id)
+              .then((res) => {
+                console.log(res)
+                if (res.error) {
+                  setMovie({
+                    movie: movie.movie,
+                    isLoaded: movie.isLoaded,
+                    alert: { type: "alert-danger", message: res.error.message }
+                  })
+                } else {
+                  props.history.push({
+                    pathname: "/admin"
+                  })
+                }
+              })
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => { }
+        }
+      ]
+    })
   }
 
 
@@ -179,11 +215,15 @@ const EditMovie = (props) => {
           <hr />
 
           <button className="btn btn-primary">SAVE</button>
-
+          <Link to="/admin" className="btn btn-secondary ms-1">
+            Cancel
+          </Link>
+          {movie.movie.id > 0 && (
+            <a href='#!' className="btn btn-danger ms-1" onClick={() => confirmDelete()}>
+              Delete
+            </a>
+          )}
         </form>
-        <div className="mt-3">
-          <pre>{JSON.stringify(movie)}</pre>
-        </div>
       </Fragment>
     )
   }
