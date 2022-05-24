@@ -2,8 +2,8 @@ import axios from 'axios'
 import React, { Fragment, useEffect, useState } from "react"
 import Alert from './UI-Components/Alert';
 import { Link } from 'react-router-dom';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const EditMovie = (props) => {
   const [movie, setMovie] = useState(
