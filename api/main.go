@@ -8,16 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type config struct {
+type Config struct {
 	port int
 	env  string
+	jwt  struct {
+		secret string
+	}
 }
 
-var cfg config
+var cfg Config
 
 func init() {
 	flag.IntVar(&cfg.port, "port", 8000, "Server port to listen on")
 	flag.StringVar(&cfg.env, "env", "development", "Application environment (development|production)")
+	flag.StringVar(&cfg.jwt.secret, "jwt-secret", "", "secret")
 }
 
 func main() {

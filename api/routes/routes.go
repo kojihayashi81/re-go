@@ -16,6 +16,10 @@ func Router(r *gin.Engine) {
 	v1.Use(middleware.Cors())
 
 	{
+		v1.POST("/signin", controllers.SignIn)
+	}
+
+	{
 		v1.GET("/status", controllers.Status)
 		v1.OPTIONS("/movie/:id", controllers.Preflight)
 		v1.PUT("/movie/:id", controllers.UpdateMovie)

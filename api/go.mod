@@ -18,6 +18,7 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-sqlite3 v1.14.13 // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/pascaldekloe/jwt v1.10.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	golang.org/x/crypto v0.0.0-20220517005047-85d78b3ac167 // indirect
 	golang.org/x/sys v0.0.0-20220517195934-5e4e11fc645e // indirect
