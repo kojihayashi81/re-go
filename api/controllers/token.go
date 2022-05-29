@@ -17,7 +17,7 @@ import (
 var validUser = models.User{
 	ID:       10,
 	Email:    "test@example.com",
-	Password: "password",
+	Password: "$2a$12$fRXB6UXPd2r6OVOVDugwo.4KVWyp38.t4d3X1pVM5RtDaqK35vRtK",
 }
 
 type Credentials struct {
@@ -32,9 +32,9 @@ func SignIn(c *gin.Context) {
 	hashedPassword := validUser.Password
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(creds.Password))
 	if err != nil {
-		log.Fatal("Unauthorized")
+		log.Println("Unauthorized")
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": "Unauthorized",
 		})
 		return
 	}
@@ -49,7 +49,7 @@ func SignIn(c *gin.Context) {
 
 	err = godotenv.Load("./envfiles/.env")
 	if err != nil {
-		log.Fatal("Error Loading .env File")
+		log.Println("Error Loading .env File")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":  err.Error(),
 			"status": "Unavailable",
@@ -58,14 +58,14 @@ func SignIn(c *gin.Context) {
 		return
 	}
 
-	jwtBytes, err := claims.HMACSign(jwt.RS256, []byte(os.Getenv("JWT_SECRET")))
+	jwtBytes, err := claims.HMACSign(jwt.HS256, []byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "OK", "response": jwtBytes})
+	c.JSON(http.StatusOK, jwtBytes)
 }

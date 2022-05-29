@@ -16,6 +16,7 @@ func Router(r *gin.Engine) {
 	v1.Use(middleware.Cors())
 
 	{
+		v1.OPTIONS("/signin", controllers.Preflight)
 		v1.POST("/signin", controllers.SignIn)
 	}
 

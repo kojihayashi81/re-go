@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from 'react-router-dom';
 import Admin from './Components/Admin'
 import Categories from './Components/Categories'
@@ -7,16 +7,35 @@ import Movies from './Components/Movies'
 import OneMovie from './Components/OneMovie'
 import EditMovie from './Components/EditMovie'
 import CreateMovie from './Components/CreateMovie'
+import Login from './Components/Login'
 
 export default function App() {
+
+  const [jwt, setJwt] = useState({ jwt: "" });
+
+  const handleJWTChange = (jwt) => { setJwt({ jwt: jwt }) }
+
+  const logout = () => { setJwt({ jwt: "" }) }
+
+  const loginLink = () => {
+    if (jwt.jwt === "") {
+      return (<Link to="/login">Login</Link>)
+    } else {
+      return (<Link to="/logout" onClick={logout}>Logout</Link>)
+    }
+  }
+
   return (
     <Router>
       <div className="container">
 
         <div className="row">
-          <h1 className="mt-3">
-            Go Watch a Movie!
-          </h1>
+          <div className='col mt-3'>
+            <h1 className="mt-3">Go Watch a Movie!</h1>
+          </div>
+          <div className='col mt-3 text-end'>
+            {loginLink()}
+          </div>
           <hr className="mb-3"></hr>
         </div>
 
@@ -30,21 +49,26 @@ export default function App() {
                 <li className="list-group-item">
                   <Link to="/movies">Movies</Link>
                 </li>
-                <li className="list-group-item">
-                  <Link to="/admin">Manage Catalogue</Link>
-                </li>
-                <li className="list-group-item">
-                  <Link to="/admin/movie/add">Add Movie</Link>
-                </li>
-                <li className="list-group-item">
-                  <Link to="/by-category">Category</Link>
-                </li>
+                {jwt.jwt !== "" && (
+                  <Fragment>
+                    <li className="list-group-item">
+                      <Link to="/admin">Manage Catalogue</Link>
+                    </li>
+                    <li className="list-group-item">
+                      <Link to="/admin/movie/add">Add Movie</Link>
+                    </li>
+                    <li className="list-group-item">
+                      <Link to="/by-category">Category</Link>
+                    </li>
+                  </Fragment>
+                )}
               </ul>
             </nav>
           </div>
 
           <div className="col-md-10">
             <Switch>
+              <Route exact path="/login" render={(props) => <Login {...props} handleJWTChange={handleJWTChange} />} />
               <Route path="/movies/:id" component={OneMovie} />
               <Route path="/movies">
                 <Movies />
