@@ -67,5 +67,5 @@ func SignIn(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, jwtBytes)
+	c.JSON(http.StatusOK, string(jwtBytes))
 }

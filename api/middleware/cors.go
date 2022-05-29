@@ -21,7 +21,9 @@ func Cors() gin.HandlerFunc {
 			"OPTIONS",
 		},
 		AllowHeaders: []string{
+			"Access-Control-Allow-Headers",
 			"Content-Type",
+			"Authorization",
 		},
 		AllowCredentials: false,
 		MaxAge:           12 * time.Hour,
