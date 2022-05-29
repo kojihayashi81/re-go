@@ -91,6 +91,7 @@ const EditMovie = (props) => {
         if (res.error) {
           setMovie({
             movie: movie.movie,
+            mpaaOptions: movie.mpaaOptions,
             isLoaded: movie.isLoaded,
             alert: { type: "alert-danger", message: data.error.message }
           })
@@ -100,6 +101,7 @@ const EditMovie = (props) => {
         console.log(res)
         setMovie({
           movie: {},
+          mpaaOptions: movie.mpaaOptions,
           isLoaded: movie.isLoaded,
           alert: { type: "alert-success", message: "Success Saved" }
         })
