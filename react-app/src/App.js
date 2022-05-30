@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from 'react-router-dom';
 import Admin from './Components/Admin'
 import Categories from './Components/Categories'
@@ -11,19 +11,27 @@ import Login from './Components/Login'
 
 export default function App() {
 
-  const [jwt, setJwt] = useState({ jwt: "" });
+  const [jwt, setJwt] = useState("");
 
-  const handleJWTChange = (jwt) => { setJwt({ jwt: jwt }) }
+  const handleJWTChange = (jwt) => { setJwt(jwt) }
 
-  const logout = () => { setJwt({ jwt: "" }) }
+  const logout = () => {
+    setJwt("")
+    window.localStorage.removeItem("jwt")
+  }
 
   const loginLink = () => {
-    if (jwt.jwt === "") {
+    if (jwt === "") {
       return (<Link to="/login">Login</Link>)
     } else {
       return (<Link to="/logout" onClick={logout}>Logout</Link>)
     }
   }
+
+  useEffect(() => {
+    let token = window.localStorage.getItem("jwt")
+    if (token && jwt === "") { setJwt(token) }
+  }, [jwt])
 
   return (
     <Router>
@@ -49,7 +57,7 @@ export default function App() {
                 <li className="list-group-item">
                   <Link to="/movies">Movies</Link>
                 </li>
-                {jwt.jwt !== "" && (
+                {jwt !== "" && (
                   <Fragment>
                     <li className="list-group-item">
                       <Link to="/admin">Manage Catalogue</Link>
@@ -88,11 +96,10 @@ export default function App() {
                 render={(props) => <Categories {...props} title={`Comedy`} />}
               />
 
-              <Route path="/admin/movie/:id(\d+)" component={EditMovie} />
-              <Route path="/admin/movie/add" component={CreateMovie} />
-              <Route path="/admin">
-                <Admin />
-              </Route>
+              <Route path="/admin/movie/:id(\d+)" render={(props) => <EditMovie {...props} jwt={jwt} />} />
+              <Route path="/admin/movie/add" render={(props) => <CreateMovie {...props} jwt={jwt} />} />
+              <Route path="/admin" render={(props) => <Admin {...props} jwt={jwt} />} />
+
               <Route path="/">
                 <Home />
               </Route>

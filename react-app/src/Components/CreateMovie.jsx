@@ -1,11 +1,11 @@
 import axios from 'axios'
-import React, { Fragment, useState } from "react"
+import React, { Fragment, useEffect, useState } from "react"
 import Alert from './UI-Components/Alert';
 import Input from './Form-Components/Input';
 import TextArea from './Form-Components/TextArea';
 import Select from './Form-Components/Select';
 
-const CreateMovie = () => {
+const CreateMovie = (props) => {
   const [movie, setMovie] = useState(
     {
       movie: { id: 0, title: "", release_date: "", runtime: "", mpaa_rating: "", rating: "", description: "" },
@@ -25,6 +25,15 @@ const CreateMovie = () => {
     }
   );
 
+  useEffect(() => {
+    if (props.jwt === "") {
+      props.history.push({
+        pathname: "/login"
+      })
+      return
+    }
+  })
+
   const handleChange = (e) => {
     let value = e.target.value
     let name = e.target.name
@@ -39,6 +48,12 @@ const CreateMovie = () => {
   }
 
   const handleSubmit = (e) => {
+    if (props.jwt === "") {
+      props.history.push({
+        pathname: "/login"
+      })
+      return
+    }
     e.preventDefault()
     const data = new FormData(e.target)
     const payload = Object.fromEntries(data)

@@ -2,7 +2,7 @@ import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const Admin = () => {
+const Admin = (props) => {
   const [movies, setMovies] = useState([
     {
       movies: [],
@@ -12,6 +12,12 @@ const Admin = () => {
   ]);
 
   useEffect(() => {
+    if (props.jwt === "") {
+      props.history.push({
+        pathname: "/login"
+      })
+      return
+    }
     async function fetchData() {
       const movies = await axios.get("http://localhost:8000/v1/movies")
         .then((res) => {

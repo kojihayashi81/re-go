@@ -30,6 +30,12 @@ const EditMovie = (props) => {
 
   const id = props.match.params.id
   useEffect(() => {
+    if (props.jwt === "") {
+      props.history.push({
+        pathname: "/login"
+      })
+      return
+    }
     if (id > 0) {
       async function fetchData() {
         await axios.get("http://localhost:8000/v1/movie/" + id)
@@ -83,9 +89,22 @@ const EditMovie = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (props.jwt === "") {
+      props.history.push({
+        pathname: "/login"
+      })
+      return
+    }
     const data = new FormData(e.target)
     const payload = Object.fromEntries(data)
-    axios.put("http://localhost:8000/v1/movie/" + id, payload)
+    const myHeader = new Headers()
+    myHeader.append("Content-Type", "application/json")
+    myHeader.append("Authorization", "Bearer " + props.jwt)
+
+    axios.put("http://localhost:8000/v1/movie/" + id, {
+      headers: myHeader,
+      body: payload,
+    })
       .then((res) => {
         console.log(res)
         if (res.error) {
@@ -107,8 +126,13 @@ const EditMovie = (props) => {
         })
       })
   }
-  const confirmDelete = (e) => {
-    console.log("delete?")
+  const confirmDelete = () => {
+    if (props.jwt === "") {
+      props.history.push({
+        pathname: "/login"
+      })
+      return
+    }
     confirmAlert({
       title: 'Confirm to delete?',
       message: 'Are you sure to do this.',

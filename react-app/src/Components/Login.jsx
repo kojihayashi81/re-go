@@ -3,7 +3,7 @@ import { Fragment, useState } from "react"
 import Alert from './UI-Components/Alert'
 import Input from './Form-Components/Input'
 
-const Login = ({ props, handleJWTChange }) => {
+const Login = (props) => {
   const [login, setLogin] = useState({
     email: "",
     password: "",
@@ -51,7 +51,11 @@ const Login = ({ props, handleJWTChange }) => {
           alert: { type: "alert-success", message: "Success Login" }
         })
         console.log(res.data)
-        handleJWTChange(res.data)
+        props.handleJWTChange(res.data)
+        window.localStorage.setItem("jwt", res.data)
+        props.history.push({
+          pathname: "/admin"
+        })
       })
       .catch((err) => {
         setLogin({
