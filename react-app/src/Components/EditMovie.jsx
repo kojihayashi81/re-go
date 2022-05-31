@@ -97,14 +97,13 @@ const EditMovie = (props) => {
     }
     const data = new FormData(e.target)
     const payload = Object.fromEntries(data)
-    const myHeader = new Headers()
-    myHeader.append("Content-Type", "application/json")
-    myHeader.append("Authorization", "Bearer " + props.jwt)
 
-    axios.put("http://localhost:8000/v1/movie/" + id, {
-      headers: myHeader,
-      body: payload,
-    })
+    axios.interceptors.request.use((config) => {
+      config.headers = { 'Authorization': `Bearer ${props.jwt}` }
+      return config;
+    });
+
+    axios.put("http://localhost:8000/v1/movie/" + id, payload)
       .then((res) => {
         console.log(res)
         if (res.error) {

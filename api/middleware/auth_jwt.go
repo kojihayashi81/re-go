@@ -16,10 +16,7 @@ import (
 
 func CheckToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Header("Vary", "Authorization")
-
 		authHeader := c.GetHeader("Authorization")
-		log.Println(authHeader)
 
 		if authHeader == "" {
 			// Could set an anonymous user
